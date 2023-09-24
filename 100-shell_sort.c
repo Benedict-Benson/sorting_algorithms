@@ -1,37 +1,58 @@
 #include "sort.h"
+
 /**
- * shell_sort - shell sort algorithm
- * @array: the array
- * @size: the size of the array
+ * swap - Function that swaps two values
  *
- * Description: using the knuth sequence
+ * @a: Fisrt value
+ * @b: Second value
+ * Return: 0
+ */
+void swap(int *a, int *b)
+{
+	int tmp;
+
+	tmp = *b;
+	*b = *a;
+	*a = tmp;
+}
+
+/**
+ * gap_sort - sort array with gaps
+ * @array: array to be sorted
+ * @size: size of array
+ * @gap: gap size
+ */
+void gap_sort(int *array, size_t size, unsigned int gap)
+{
+	size_t j, k;
+
+	for (j = gap; j < size; j++)
+	{
+		k = j;
+		while (k >= gap && array[k] < array[k - gap])
+		{
+			swap(array + k, array + k - gap);
+			k -= gap;
+		}
+	}
+}
+
+/**
+ * shell_sort - shell sort
+ * @array: array to be sorted
+ * @size: size of array
  */
 void shell_sort(int *array, size_t size)
 {
-	size_t i, j;
-	int item;
-	size_t gap = 1;
+	unsigned int gap = 1;
 
-	if (array == NULL || size < 2)
-	{
-		return;
-	}
-	while (gap < (size / 3))
-	{
+	while (gap < size / 3)
 		gap = gap * 3 + 1;
-	}
+
 	while (gap >= 1)
 	{
-		for (i = gap; i < size; i++)
-		{
-			for (j = i; j >= gap && array[gap] < array[j - gap]; j -= gap)
-			{
-				item = array[j];
-				array[j] = array[j - gap];
-				array[j - gap] = item;
-			}
-		}
-		gap = gap / 3;
+		gap_sort(array, size, gap);
+		gap = (gap - 1) / 3;
 		print_array(array, size);
 	}
 }
